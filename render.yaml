@@ -1,0 +1,20 @@
+# One-click setup on Render: New > Blueprint, pick this repo.
+services:
+  - type: web
+    name: selfmade
+    runtime: docker
+    plan: starter            # needed for the persistent disk
+    healthCheckPath: /api/stats
+    disk:
+      name: selfmade-data
+      mountPath: /data       # coin registry lives here; must survive restarts
+      sizeGB: 1
+    envVars:
+      - key: TREASURY_SECRET
+        sync: false          # you paste this in the dashboard; never commit it
+      - key: RPC_URL
+        sync: false
+      - key: VITE_RPC_URL
+        sync: false
+      - key: ENGINE_ENABLED
+        value: "false"
