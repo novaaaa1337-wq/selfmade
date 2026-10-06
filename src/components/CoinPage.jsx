@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLive, getJSON } from '../lib/live.jsx';
 import { sol, int, ago, short, solscanTx, solscanAcct, pumpCoin } from '../lib/format.js';
+import { api } from '../lib/api.js';
 import { CoinImage } from '../lib/sprite.jsx';
 
 const BUCKETS = [['ops', 'Website & DEX'], ['community', 'Community'], ['buyback', 'Buyback & burn'], ['holders', 'Holders']];
@@ -15,7 +16,7 @@ export function CoinPage({ mint }) {
   const [, tick] = useState(0);
 
   useEffect(() => {
-    getJSON(`/api/coins/${mint}`).then(setData).catch((e) => setErr(e.message));
+    getJSON(api(`/api/coins/${mint}`)).then(setData).catch((e) => setErr(e.message));
     const t = setInterval(() => tick((n) => n + 1), 1000);
     return () => clearInterval(t);
   }, [mint]);

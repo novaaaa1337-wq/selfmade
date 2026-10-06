@@ -16,5 +16,7 @@ services:
         sync: false
       - key: VITE_RPC_URL
         sync: false
+      - key: CORS_ORIGIN
+        sync: false          # your Vercel site, e.g. https://yourdomain.com
       - key: ENGINE_ENABLED
         value: "false"

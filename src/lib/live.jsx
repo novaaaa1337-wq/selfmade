@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { api } from './api.js';
 
 const LiveCtx = createContext(null);
 export const useLive = () => useContext(LiveCtx);
@@ -23,12 +24,12 @@ export function LiveProvider({ children }) {
   useEffect(() => {
     let es;
     let stop = false;
-    Promise.all([getJSON('/api/stats'), getJSON('/api/config'), getJSON('/api/coins'), getJSON('/api/activity')])
+    Promise.all([getJSON(api('/api/stats')), getJSON(api('/api/config')), getJSON(api('/api/coins')), getJSON(api('/api/activity'))])
       .then(([s, c, list, act]) => { if (stop) return; setStats(s); setConfig(c); setCoins(list); setActivity(act); setError(null); })
       .catch((e) => setError(e.message));
 
     const open = () => {
-      es = new EventSource('/api/stream');
+      es = new EventSource(api('/api/stream'));
       es.onopen = () => { setOnline(true); setError(null); };
       es.onerror = () => setOnline(false);
       es.addEventListener('stats', (e) => setStats(JSON.parse(e.data)));

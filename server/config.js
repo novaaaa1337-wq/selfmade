@@ -19,5 +19,7 @@ export const cfg = {
   priorityFeeSol: num(process.env.PRIORITY_FEE_SOL, 0.0005),
   minClaimSol: num(process.env.MIN_CLAIM_SOL, 0.01),
   treasuryReserveSol: num(process.env.TREASURY_RESERVE_SOL, 0.01),
+  // Sites allowed to call this API from another domain, e.g. https://yourdomain.com
+  corsOrigin: process.env.CORS_ORIGIN || '',
   dataDir: process.env.DATA_DIR || 'data',
 };

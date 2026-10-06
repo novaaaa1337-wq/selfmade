@@ -80,3 +80,10 @@ docker run -d -p 80:8787 -v selfmade-data:/data --env-file .env selfmade
 Put it behind HTTPS (Caddy, or the host's built-in TLS). Wallets require HTTPS.
 
 Back up `/data/db.json` and `TREASURY_SECRET`. Together they control every treasury.
+
+### Site on Vercel + server on Render
+
+Vercel can host the site but not the server (it needs a long-running process and a disk).
+1. Deploy the server on Render as above, with `CORS_ORIGIN=https://yourdomain.com`, and give it the domain `api.yourdomain.com`.
+2. On Vercel: Add New → Project → import this repo. Set `VITE_API_URL=https://api.yourdomain.com` and `VITE_RPC_URL`. `vercel.json` handles the rest.
+3. Vercel → Settings → Domains → add `yourdomain.com` and follow the DNS instructions.

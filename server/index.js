@@ -15,6 +15,17 @@ import { startEngine } from './engine.js';
 load();
 const app = express();
 app.use(express.json({ limit: '100kb' }));
+
+// Lets a site hosted elsewhere (e.g. Vercel) call this API. Comma-separated list.
+const allowed = (cfg.corsOrigin || '').split(',').map((s) => s.trim()).filter(Boolean);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && allowed.includes(origin)) {
+    res.set({ 'Access-Control-Allow-Origin': origin, Vary: 'Origin', 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' });
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+  }
+  next();
+});
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 4 * 1024 * 1024 } });
 
 const liveStats = () => stats({ engineEnabled: cfg.engineEnabled, trackerConnected: tracker.connected, launchesEnabled: !!cfg.secret });

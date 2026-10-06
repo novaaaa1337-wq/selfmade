@@ -3,6 +3,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useLive } from '../lib/live.jsx';
+import { api } from '../lib/api.js';
 import { short, solscanTx, pumpCoin } from '../lib/format.js';
 
 const PHASES = [
@@ -81,10 +82,10 @@ export function LaunchPage() {
     (async () => {
       while (!stop) {
         await new Promise((r) => setTimeout(r, 1500));
-        try { const s = await (await fetch(`/api/launch/${id}`)).json(); if (s.status === 'creating' || s.status === 'pending_check') setPhase(3); } catch {}
+        try { const s = await (await fetch(api(`/api/launch/${id}`))).json(); if (s.status === 'creating' || s.status === 'pending_check') setPhase(3); } catch {}
       }
     })();
-    try { return await postJSON('/api/launch/confirm', { id, signature }); } finally { stop = true; }
+    try { return await postJSON(api('/api/launch/confirm'), { id, signature }); } finally { stop = true; }
   }
 
   async function launch(e) {
@@ -107,7 +108,7 @@ export function LaunchPage() {
       fd.append('creatorWallet', publicKey.toBase58());
       fd.append('splitOps', split.ops); fd.append('splitCommunity', split.community);
       fd.append('splitBuyback', split.buyback); fd.append('splitHolders', split.holders);
-      const r = await fetch('/api/launch/prepare', { method: 'POST', body: fd });
+      const r = await fetch(api('/api/launch/prepare'), { method: 'POST', body: fd });
       const prep = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(prep.error || 'Upload failed');
 
